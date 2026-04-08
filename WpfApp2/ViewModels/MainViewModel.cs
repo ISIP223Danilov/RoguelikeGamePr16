@@ -7,17 +7,20 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WpfApp2.Commands;
 using WpfApp2.Models;
 using WpfApp2.Services;
 
+
 namespace WpfApp2.ViewModels
 {
+
     public class MainViewModel : INotifyPropertyChanged
     {
         private GameService _game;
         private GamePhase _currentPhase;
         private EncounterType _currentEncounter;
-        private List<Enemy> _currentEnemies;
+        private System.Collections.Generic.List<Enemy> _currentEnemies;
         private bool _showItemChoice;
         private Item _pendingItem;
         private string _currentImage;
@@ -64,6 +67,12 @@ namespace WpfApp2.ViewModels
         {
             get => _inventoryItems;
             set { _inventoryItems = value; OnPropertyChanged(); }
+        }
+
+        public Item PendingItem
+        {
+            get => _pendingItem;
+            set { _pendingItem = value; OnPropertyChanged(); }
         }
 
         public ICommand StartGameCommand { get; set; }
@@ -118,14 +127,14 @@ namespace WpfApp2.ViewModels
                 bool isBoss = _game.Player.CurrentFloor % 10 == 0;
                 _currentEnemies = _game.GenerateEnemies(isBoss);
                 _game.StartCombat(_currentEnemies);
-                CurrentImage = GetEnemyImage(_currentEnemies[0].Name);
+                UpdateGameImage(_currentEnemies[0].Name);
                 OnPropertyChanged(nameof(EnemyInfo));
             }
             else
             {
                 var item = _game.GenerateChestItem();
-                _pendingItem = item;
-                CurrentImage = "/Images/chest.png";
+                PendingItem = item;
+                UpdateGameImage("chest");
 
                 if (item.Type != ItemType.HealthPotion)
                 {
@@ -190,37 +199,36 @@ namespace WpfApp2.ViewModels
 
         private void TakeItem()
         {
-            if (_pendingItem.Type == ItemType.Weapon)
+            if (PendingItem.Type == ItemType.Weapon)
             {
-                _game.EquipWeapon(_pendingItem);
+                _game.EquipWeapon(PendingItem);
             }
-            else if (_pendingItem.Type == ItemType.Armor)
+            else if (PendingItem.Type == ItemType.Armor)
             {
-                _game.EquipArmor(_pendingItem);
+                _game.EquipArmor(PendingItem);
             }
 
-            // Добавляем предмет в инвентарь если есть место
             if (!_game.Inventory.IsFull)
             {
-                _game.Inventory.AddItem(_pendingItem);
-                _game.Logger.AddEvent($"✅ {_pendingItem.Name} добавлен в инвентарь!");
+                _game.Inventory.AddItem(PendingItem);
+                _game.Logger.AddEvent($"✅ {PendingItem.Name} добавлен в инвентарь!");
                 UpdateInventoryDisplay();
             }
             else
             {
-                _game.Logger.AddEvent($"⚠️ Инвентарь полон! {_pendingItem.Name} утерян!");
+                _game.Logger.AddEvent($"⚠️ Инвентарь полон! {PendingItem.Name} утерян!");
             }
 
             ShowItemChoice = false;
-            _pendingItem = null;
+            PendingItem = null;
             NextTurn();
         }
 
         private void DiscardItem()
         {
-            _game.Logger.AddEvent($"❌ Вы выбросили {_pendingItem.Name}");
+            _game.Logger.AddEvent($"❌ Вы выбросили {PendingItem.Name}");
             ShowItemChoice = false;
-            _pendingItem = null;
+            PendingItem = null;
             NextTurn();
         }
 
@@ -236,7 +244,6 @@ namespace WpfApp2.ViewModels
         {
             if (item == null) return;
 
-            // Находим индекс предмета в инвентаре
             var items = _game.GetInventoryItems();
             int index = items.IndexOf(item);
 
@@ -244,8 +251,6 @@ namespace WpfApp2.ViewModels
             {
                 _game.Logger.AddEvent($"🎒 Использован предмет: {item.Name}");
                 UpdateInventoryDisplay();
-
-                // Обновляем отображение экипировки
                 OnPropertyChanged(nameof(Player));
             }
         }
@@ -260,12 +265,31 @@ namespace WpfApp2.ViewModels
             }
         }
 
-        private string GetEnemyImage(string enemyName)
+        private void UpdateGameImage(string imageType)
         {
-            if (enemyName.Contains("Гоблин") || enemyName.Contains("ВВГ")) return "/Images/goblin.png";
-            if (enemyName.Contains("Скелет") || enemyName.Contains("Ковальский") || enemyName.Contains("Пестов")) return "/Images/skeleton.png";
-            if (enemyName.Contains("Маг") || enemyName.Contains("Архимаг")) return "/Images/mage.png";
-            return "/Images/enemy.png";
+            // Используем эмодзи вместо картинок
+            switch (imageType.ToLower())
+            {
+                case "goblin":
+                case "ввг":
+                    CurrentImage = "👺";
+                    break;
+                case "skeleton":
+                case "ковальский":
+                case "пестов":
+                    CurrentImage = "💀";
+                    break;
+                case "mage":
+                case "архимаг":
+                    CurrentImage = "🧙";
+                    break;
+                case "chest":
+                    CurrentImage = "📦";
+                    break;
+                default:
+                    CurrentImage = "👾";
+                    break;
+            }
         }
 
         public Player Player => _game.Player;

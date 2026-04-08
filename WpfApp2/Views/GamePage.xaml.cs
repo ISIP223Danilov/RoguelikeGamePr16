@@ -16,27 +16,21 @@ using WpfApp2.Models;
 
 namespace WpfApp2.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для GamePage.xaml
-    /// </summary>
-    public partial class GamePage : Page
+    public partial class GamePage : UserControl
     {
-        public partial class GamePage : UserControl
+        public GamePage()
         {
-            public GamePage()
-            {
-                InitializeComponent();
-            }
+            InitializeComponent();
+        }
 
-            private void Item_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Item_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.DataContext is Item item)
             {
-                if (sender is FrameworkElement element && element.DataContext is Item item)
+                var viewModel = DataContext as ViewModels.MainViewModel;
+                if (viewModel?.UseItemCommand?.CanExecute(item) == true)
                 {
-                    var viewModel = DataContext as ViewModels.MainViewModel;
-                    if (viewModel?.UseItemCommand?.CanExecute(item) == true)
-                    {
-                        viewModel.UseItemCommand.Execute(item);
-                    }
+                    viewModel.UseItemCommand.Execute(item);
                 }
             }
         }
