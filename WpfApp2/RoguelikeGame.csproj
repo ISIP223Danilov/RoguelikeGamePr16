@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\CombatService.cs" />
+    <Compile Include="Services\EventLogger.cs" />
+    <Compile Include="Services\GameService.cs" />
+    <Compile Include="Services\RandomService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,6 +73,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Armor.cs" />
+    <Compile Include="Models\Boss.cs" />
+    <Compile Include="Models\Enemy.cs" />
+    <Compile Include="Models\GameState.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Weapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,6 +104,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Images\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
