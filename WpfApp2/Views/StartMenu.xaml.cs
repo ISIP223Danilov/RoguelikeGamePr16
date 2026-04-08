@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WpfApp2
+namespace WpfApp2.Views
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для StartMenu.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartMenu : Page
     {
-        public MainWindow()
+        public StartMenu()
         {
             InitializeComponent();
         }
