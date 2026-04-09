@@ -18,11 +18,21 @@ namespace WpfApp2.Views
     /// <summary>
     /// Логика взаимодействия для StartMenu.xaml
     /// </summary>
-    public partial class StartMenu : Page
+    public partial class StartMenu : UserControl
     {
         public StartMenu()
         {
             InitializeComponent();
+        }
+
+        private void StartGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Находим главное окно
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow != null)
+            {
+                mainWindow.StartGame();
+            }
         }
     }
 }

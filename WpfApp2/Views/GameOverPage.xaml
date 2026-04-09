@@ -39,12 +39,6 @@
                 Foreground="White"
                 BorderThickness="0"
                 Cursor="Hand"
-                Command="{Binding RestartCommand}">
-            <Button.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="10"/>
-                </Style>
-            </Button.Resources>
-        </Button>
+                Command="{Binding RestartCommand}"/>
     </Grid>
 </UserControl>

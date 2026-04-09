@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfApp2.Models
 {
+
     public enum ItemType
     {
         HealthPotion,
@@ -17,7 +18,7 @@ namespace WpfApp2.Models
     {
         public string Name { get; set; }
         public ItemType Type { get; set; }
-        public int Value { get; set; } // Для оружия - урон, для брони - защита, для зелья - количество лечения
+        public int Value { get; set; }
         public string Description { get; set; }
         public string Icon { get; set; }
 
@@ -26,130 +27,121 @@ namespace WpfApp2.Models
             Name = name;
             Type = type;
             Value = value;
-            Description = string.IsNullOrEmpty(description) ? GetDefaultDescription(type, value) : description;
+            Description = description;
             Icon = GetIconForType(type);
+
+            if (string.IsNullOrEmpty(description))
+            {
+                Description = GetDefaultDescription(type, value);
+            }
         }
 
         private string GetDefaultDescription(ItemType type, int value)
         {
-            return type switch
+            switch (type)
             {
-                ItemType.HealthPotion => $"Восстанавливает {value} HP",
-                ItemType.Weapon => $"Наносит {value} урона",
-                ItemType.Armor => $"Дает {value} защиты",
-                _ => "Обычный предмет"
-            };
+                case ItemType.HealthPotion:
+                    return "Восстанавливает " + value + " HP";
+                case ItemType.Weapon:
+                    return "Наносит " + value + " урона";
+                case ItemType.Armor:
+                    return "Дает " + value + " защиты";
+                default:
+                    return "Обычный предмет";
+            }
         }
 
         private string GetIconForType(ItemType type)
         {
-            return type switch
+            switch (type)
             {
-                ItemType.HealthPotion => "🧪",
-                ItemType.Weapon => "⚔️",
-                ItemType.Armor => "🛡️",
-                _ => "📦"
-            };
+                case ItemType.HealthPotion:
+                    return "🧪";
+                case ItemType.Weapon:
+                    return "⚔️";
+                case ItemType.Armor:
+                    return "🛡️";
+                default:
+                    return "📦";
+            }
         }
 
-        // Фабричные методы для создания предметов
         public static Item CreateHealthPotion(int healAmount = 50)
         {
-            return new Item("Зелье здоровья", ItemType.HealthPotion, healAmount, $"Восстанавливает {healAmount} HP");
-        }
-
-        public static Item CreateHealthPotionFull()
-        {
-            return new Item("Великое зелье лечения", ItemType.HealthPotion, 100, "Полностью восстанавливает HP");
+            return new Item("Зелье здоровья", ItemType.HealthPotion, healAmount, "Восстанавливает " + healAmount + " HP");
         }
 
         public static Item CreateRandomWeapon()
         {
-            var weapons = new[]
-            {
-                new { Name = "Ржавый меч", Damage = 12 },
-                new { Name = "Стальной клинок", Damage = 18 },
-                new { Name = "Двуручный топор", Damage = 25 },
-                new { Name = "Кинжал убийцы", Damage = 15, Desc = "Быстрое оружие" },
-                new { Name = "Боевой молот", Damage = 22 },
-                new { Name = "Эльфийский лук", Damage = 20 },
-                new { Name = "Пламенный меч", Damage = 28 },
-                new { Name = "Ледяная секира", Damage = 24 },
-                new { Name = "Драконий коготь", Damage = 30 }
-            };
-
-            var random = new Random();
-            var weapon = weapons[random.Next(weapons.Length)];
-            return new Item(weapon.Name, ItemType.Weapon, weapon.Damage, $"Наносит {weapon.Damage} урона");
+            Random random = new Random();
+            string[] weaponNames = { "Ржавый меч", "Стальной клинок", "Двуручный топор", "Кинжал", "Боевой молот", "Эльфийский лук" };
+            int[] weaponDamage = { 12, 18, 25, 15, 22, 20 };
+            int index = random.Next(weaponNames.Length);
+            return new Item(weaponNames[index], ItemType.Weapon, weaponDamage[index], "Наносит " + weaponDamage[index] + " урона");
         }
 
         public static Item CreateRandomArmor()
         {
-            var armors = new[]
-            {
-                new { Name = "Кожаный доспех", Defense = 5 },
-                new { Name = "Кольчуга", Defense = 8 },
-                new { Name = "Стальная кираса", Defense = 12 },
-                new { Name = "Черный доспех", Defense = 15 },
-                new { Name = "Пластинчатый доспех", Defense = 18 },
-                new { Name = "Магическая мантия", Defense = 10 },
-                new { Name = "Драконья чешуя", Defense = 20 },
-                new { Name = "Небесная броня", Defense = 25 }
-            };
-
-            var random = new Random();
-            var armor = armors[random.Next(armors.Length)];
-            return new Item(armor.Name, ItemType.Armor, armor.Defense, $"Дает {armor.Defense} защиты");
+            Random random = new Random();
+            string[] armorNames = { "Кожаный доспех", "Кольчуга", "Стальная кираса", "Черный доспех", "Пластинчатый доспех" };
+            int[] armorDefense = { 5, 8, 12, 15, 18 };
+            int index = random.Next(armorNames.Length);
+            return new Item(armorNames[index], ItemType.Armor, armorDefense[index], "Дает " + armorDefense[index] + " защиты");
         }
 
         public static Item CreateRandomItem()
         {
-            var random = new Random();
+            Random random = new Random();
             int type = random.Next(0, 3);
 
-            return type switch
+            if (type == 0)
             {
-                0 => CreateHealthPotion(random.Next(30, 81)),
-                1 => CreateRandomWeapon(),
-                2 => CreateRandomArmor(),
-                _ => CreateHealthPotion(50)
-            };
+                return CreateHealthPotion(random.Next(30, 81));
+            }
+            else if (type == 1)
+            {
+                return CreateRandomWeapon();
+            }
+            else
+            {
+                return CreateRandomArmor();
+            }
         }
 
         public void Apply(Player player)
         {
-            switch (Type)
+            if (Type == ItemType.HealthPotion)
             {
-                case ItemType.HealthPotion:
-                    int newHealth = Math.Min(player.MaxHealth, player.Health + Value);
-                    int healed = newHealth - player.Health;
-                    player.Health = newHealth;
-                    Console.WriteLine($"{Icon} Вы использовали {Name} и восстановили {healed} HP!");
-                    break;
-                case ItemType.Weapon:
-                    Console.WriteLine($"{Icon} Найдено оружие: {Name} (Урон: {Value})");
-                    break;
-                case ItemType.Armor:
-                    Console.WriteLine($"{Icon} Найдена броня: {Name} (Защита: {Value})");
-                    break;
+                int newHealth = Math.Min(player.MaxHealth, player.Health + Value);
+                player.Health = newHealth;
             }
         }
 
         public override string ToString()
         {
-            return $"{Icon} {Name} - {Description}";
+            return Icon + " " + Name + " - " + Description;
         }
     }
 
-    // Класс для инвентаря игрока
     public class Inventory
     {
         private List<Item> _items;
         public const int MaxSize = 10;
 
-        public IReadOnlyList<Item> Items => _items;
-        public int Count => _items.Count;
-        public bool IsFull => _items.Count >= MaxSize;
+        public List<Item> Items
+        {
+            get { return _items; }
+        }
+
+        public int Count
+        {
+            get { return _items.Count; }
+        }
+
+        public bool IsFull
+        {
+            get { return _items.Count >= MaxSize; }
+        }
 
         public Inventory()
         {
@@ -162,7 +154,6 @@ namespace WpfApp2.Models
             {
                 return false;
             }
-
             _items.Add(item);
             return true;
         }
@@ -184,11 +175,6 @@ namespace WpfApp2.Models
         public void Clear()
         {
             _items.Clear();
-        }
-
-        public List<Item> GetItemsByType(ItemType type)
-        {
-            return _items.Where(item => item.Type == type).ToList();
         }
     }
 }

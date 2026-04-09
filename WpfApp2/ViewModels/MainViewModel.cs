@@ -267,31 +267,29 @@ namespace WpfApp2.ViewModels
 
         private void UpdateGameImage(string imageType)
         {
-            // Используем эмодзи вместо картинок
             switch (imageType.ToLower())
             {
                 case "goblin":
                 case "ввг":
-                    CurrentImage = "👺";
+                    CurrentImage = "/Images/goblin.jpg";
                     break;
                 case "skeleton":
                 case "ковальский":
                 case "пестов":
-                    CurrentImage = "💀";
+                    CurrentImage = "/Images/skeleton.png";
                     break;
                 case "mage":
                 case "архимаг":
-                    CurrentImage = "🧙";
+                    CurrentImage = "/Images/mag.jfif";  // временно эмодзи
                     break;
                 case "chest":
-                    CurrentImage = "📦";
+                    CurrentImage = "📦";  // временно эмодзи
                     break;
                 default:
                     CurrentImage = "👾";
                     break;
             }
         }
-
         public Player Player => _game.Player;
         public EventLogger Logger => _game.Logger;
         public bool IsInCombat => _game.IsInCombat;

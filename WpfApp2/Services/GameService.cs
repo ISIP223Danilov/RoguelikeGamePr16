@@ -91,24 +91,25 @@ namespace WpfApp2.Services
         private Enemy GenerateRandomEnemy()
         {
             int type = RandomService.Next(0, 3);
-            switch (type)
-            {
-                case 0: return Enemy.CreateGoblin();
-                case 1: return Enemy.CreateSkeleton();
-                default: return Enemy.CreateMage();
-            }
+            if (type == 0)
+                return Enemy.CreateGoblin();
+            else if (type == 1)
+                return Enemy.CreateSkeleton();
+            else
+                return Enemy.CreateMage();
         }
 
         private Boss GenerateRandomBoss()
         {
             int type = RandomService.Next(0, 4);
-            switch (type)
-            {
-                case 0: return Boss.CreateVVG();
-                case 1: return Boss.CreateKowalski();
-                case 2: return Boss.CreateArchmage();
-                default: return Boss.CreatePestov();
-            }
+            if (type == 0)
+                return Boss.CreateVVG();
+            else if (type == 1)
+                return Boss.CreateKowalski();
+            else if (type == 2)
+                return Boss.CreateArchmage();
+            else
+                return Boss.CreatePestov();
         }
 
         public void StartCombat(List<Enemy> enemies)

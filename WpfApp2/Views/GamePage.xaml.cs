@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp2.Models;
+using WpfApp2.ViewModels;
 
 namespace WpfApp2.Views
 {
@@ -23,12 +24,12 @@ namespace WpfApp2.Views
             InitializeComponent();
         }
 
-        private void Item_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Inventory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is FrameworkElement element && element.DataContext is Item item)
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is Item item)
             {
                 var viewModel = DataContext as ViewModels.MainViewModel;
-                if (viewModel?.UseItemCommand?.CanExecute(item) == true)
+                if (viewModel != null && viewModel.UseItemCommand.CanExecute(item))
                 {
                     viewModel.UseItemCommand.Execute(item);
                 }

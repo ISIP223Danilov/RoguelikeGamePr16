@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace WpfApp2.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для GameOverPage.xaml
-    /// </summary>
     public partial class GameOverPage : UserControl
     {
         public GameOverPage()
